@@ -33,6 +33,7 @@
         width: 100%;
         max-width: 200px;
         height: 200px;
+        border-radius: 3px;
         &__image {
             width: 100%;
             height: 100%;

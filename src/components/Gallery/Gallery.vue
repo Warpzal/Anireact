@@ -8,7 +8,6 @@
 </script>
 
 <template>
-    <Gallery__Search :reactions="props.reactions" />
     <section class="gallery grid">
         <Reaction__Image
             v-for="reaction in reactions"

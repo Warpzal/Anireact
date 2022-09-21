@@ -149,6 +149,9 @@
 </template>
 
 <style lang="scss" scoped>
+    main {
+        padding: 15px;
+    }
     img.reaction {
         width: 200px;
         height: 200px;

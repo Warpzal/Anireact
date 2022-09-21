@@ -1,12 +1,16 @@
 <script setup>
-    import { ref } from 'vue'
+    import { ref, watchEffect } from 'vue'
+    import { tags } from '@/tags.js'
 
-    const tags = ref(['happy', 'disappointment'].sort())
+    const searchTerm = ref('')
+
+    watchEffect(() => {})
 </script>
 
 <template>
     <form class="search">
         <input
+            v-model="searchTerm"
             autocomplete="off"
             list="tags"
             name="tags"

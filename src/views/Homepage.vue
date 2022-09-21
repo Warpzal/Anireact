@@ -3,6 +3,7 @@
     import { client } from '../pocketbase'
 
     import Gallery from '../components/Gallery/Gallery.vue'
+    import Gallery__Search from '../components/Gallery/Gallery__Search.vue'
 
     const reactions = ref()
 
@@ -14,6 +15,7 @@
 </script>
 
 <template>
+    <Gallery__Search :reactions="reactions" />
     <Gallery :reactions="reactions" />
 </template>
 
