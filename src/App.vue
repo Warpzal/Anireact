@@ -6,7 +6,7 @@
 
 <template>
     <Navigation></Navigation>
-    <RouterView />
+    <RouterView :key="$route.path" />
 </template>
 
 <style lang="scss">

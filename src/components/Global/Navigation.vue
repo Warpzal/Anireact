@@ -26,37 +26,57 @@
             <login v-if="isLoggingIn"></login>
             <register v-if="isSigningUp"></register>
         </Modal>
-        <h4>AnimeReactions.moe</h4>
-        <h4 v-if="user">{{ user.name }}</h4>
-        <router-link to="/me">
-            <button v-if="user" class="button">My Profile</button>
-        </router-link>
-        <button v-if="user" @click="logout" class="button">Logout</button>
-        <nav>
-            <ul>
-                <li v-if="!user">
-                    <button @click="handleLogin" class="button">Login</button>
-                    <button @click="handleRegister" class="button">
-                        Register
+        <div class="nav">
+            <div class="left-side">
+                <p>reactions.moe</p>
+            </div>
+            <div class="right-side">
+                <div v-if="user">
+                    <router-link to="/" class="header__link">
+                        <button class="button">Home</button>
+                    </router-link>
+                    <router-link :to="`/user/${user?.name}`">
+                        <button v-if="user" @click="refresh" class="button">
+                            My Profile
+                        </button>
+                    </router-link>
+                    <button v-if="user" @click="logout" class="button">
+                        Logout
                     </button>
-                </li>
-                <li>
-                    <router-link to="/" class="header__link">Home</router-link>
-                </li>
-            </ul>
-        </nav>
+                </div>
+                <nav v-else>
+                    <ul>
+                        <li>
+                            <button @click="handleLogin" class="button">
+                                Login
+                            </button>
+                            <button @click="handleRegister" class="button">
+                                Register
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </header>
 </template>
 
 <style lang="scss" scoped>
     .header {
         max-width: 100%;
-        margin-bottom: 20px;
         padding: 5px 20px;
-        background: red;
+        background: grey;
         box-shadow: var(--shadow-3);
     }
     .header__link {
         color: var(--primary-color);
+    }
+    .nav {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        ul {
+            display: flex;
+        }
     }
 </style>

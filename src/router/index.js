@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
 import HomePage from '@/views/Homepage.vue'
-import MyProfile from '@/views/MyProfile.vue'
+import UserProfile from '@/views/UserProfile.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,18 +8,27 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: HomeView,
-        },
-        {
-            path: '/gallery',
-            name: 'gallery',
             component: HomePage,
         },
         {
-            path: '/me',
-            name: 'myProfile',
-            component: MyProfile,
+            path: '/user/:username',
+            props: true,
+            name: 'userProfile',
+            component: UserProfile,
         },
+        {
+            path: '/user/:username/:page',
+            props: true,
+            name: 'userProfilePagination',
+            component: UserProfile,
+        },
+        {
+            path: '/:page',
+            props: true,
+            name: 'homePagination',
+            component: HomePage,
+        },
+        { path: '/:notFound(.*)', redirect: '/' },
     ],
 })
 

@@ -1,8 +1,8 @@
 <script setup>
     import { ref } from 'vue'
     import { useAuth } from '@/composables/useAuth.js'
-    import { domain, client } from '@/pocketbase'
-    import { tags } from '@/tags.js'
+    import { client } from '@/pocketbase'
+    import { tags } from '@/config.js'
 
     const { user } = useAuth()
     const uploadFile = ref()
@@ -16,6 +16,7 @@
             formData.append('uploader', user.value.userId)
             formData.append('emotion', emotion.value)
             const newFile = await client.records.create('reactions', formData)
+            window.location.reload()
         } catch (e) {
             console.log(e)
         }
@@ -28,7 +29,7 @@
         <input ref="uploadFile" type="file" />
         <p>Select Emotion</p>
         <div class="select">
-            <select>
+            <select v-model="emotion">
                 <option v-for="tag in tags">{{ tag }}</option>
             </select>
         </div>

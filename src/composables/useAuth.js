@@ -47,7 +47,7 @@ export function useAuth() {
                 passwordConfirm: password,
             })
             await client.records.update('profiles', newUser.profile.id, {
-                name: username,
+                name: username.toLowerCase(),
             })
             login({ email, password })
         } catch (e) {

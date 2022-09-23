@@ -1,4 +1,4 @@
-export const tags = [
+const tags = [
     'Happy',
     'Sad',
     'Disgusted',
@@ -11,3 +11,7 @@ export const tags = [
     'Intense',
     'Embarassed',
 ].sort()
+
+const resultsPerPage = 5
+
+export { tags, resultsPerPage }

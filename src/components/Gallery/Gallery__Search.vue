@@ -1,10 +1,13 @@
 <script setup>
     import { ref, watchEffect } from 'vue'
-    import { tags } from '@/tags.js'
+    import { tags } from '@/config.js'
 
+    const emit = defineEmits(['filterTags'])
     const searchTerm = ref('')
 
-    watchEffect(() => {})
+    watchEffect(() => {
+        emit('filterTags', searchTerm.value)
+    })
 </script>
 
 <template>
