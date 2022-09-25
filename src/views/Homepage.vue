@@ -1,8 +1,7 @@
 <script setup>
-    import { ref, onMounted, computed } from 'vue'
+    import { ref, onMounted } from 'vue'
     import { client } from '../pocketbase'
     import { resultsPerPage } from '../config.js'
-
     import Gallery from '../components/Gallery/Gallery.vue'
     import Gallery__Search from '../components/Gallery/Gallery__Search.vue'
 

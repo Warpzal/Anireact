@@ -1,4 +1,5 @@
 const tags = [
+    'Angry',
     'Happy',
     'Sad',
     'Disgusted',

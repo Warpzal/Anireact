@@ -1,9 +1,9 @@
 <script setup>
-    import { onMounted, ref, computed } from 'vue'
+    import { onMounted, ref, computed, watch } from 'vue'
     import { useAuth } from '@/composables/useAuth.js'
     import { domain, client } from '@/pocketbase'
     import { resultsPerPage } from '../config.js'
-
+    import { useRoute } from 'vue-router'
     import Gallery from '../components/Gallery/Gallery.vue'
     import Gallery__Search from '../components/Gallery/Gallery__Search.vue'
     import Modal from '../components/Global/Modal.vue'
@@ -19,6 +19,18 @@
     const reactions = ref()
     const totalPages = ref()
 
+    const route = useRoute()
+
+    watch(route.params, async (newRoute, oldRoute) => {
+        const pageNumber = +props.page || 1
+        const data = await client.records.getList(
+            'reactions',
+            pageNumber,
+            resultsPerPage
+        )
+        totalPages.value = data.totalPages
+        reactions.value = data.items
+    })
     onMounted(async () => {
         await loadUserProfile()
         await loadReactions()
