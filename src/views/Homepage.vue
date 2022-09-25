@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { ref, onMounted, computed } from 'vue'
     import { client } from '../pocketbase'
     import { resultsPerPage } from '../config.js'
 
@@ -10,6 +10,7 @@
         page: String,
     })
 
+    const currentReactions = ref()
     const reactions = ref()
     const totalPages = ref()
 
@@ -23,12 +24,35 @@
         totalPages.value = data.totalPages
         reactions.value = data.items
     })
+
+    const filterTags = async (tag) => {
+        if (tag.length < 3) {
+            currentReactions.value = reactions.value
+            return
+        }
+        const capitalize = (word) => {
+            word = [...word]
+            for (const [index, letter] of word.entries()) {
+                if (index == 0) word[index] = letter.toUpperCase()
+                else word[index] = letter.toLowerCase()
+            }
+            return word.join('')
+        }
+        tag = capitalize(tag)
+        const data = await client.records.getFullList('reactions', 100, {
+            filter: `emotion~"${tag}"`,
+        })
+        currentReactions.value = data
+    }
 </script>
 
 <template>
     <div>
-        <Gallery__Search :reactions="reactions" />
-        <Gallery :reactions="reactions" :totalPages="totalPages" />
+        <Gallery__Search
+            @filterTags="filterTags"
+            :reactions="currentReactions"
+        />
+        <Gallery :reactions="currentReactions" :totalPages="totalPages" />
     </div>
 </template>
 

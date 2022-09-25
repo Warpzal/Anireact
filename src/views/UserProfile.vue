@@ -1,5 +1,5 @@
 <script setup>
-    import { onMounted, onUpdated, ref, computed } from 'vue'
+    import { onMounted, ref, computed } from 'vue'
     import { useAuth } from '@/composables/useAuth.js'
     import { domain, client } from '@/pocketbase'
     import { resultsPerPage } from '../config.js'
@@ -11,27 +11,32 @@
 
     const props = defineProps({
         username: String,
+        page: String,
     })
 
     const { user } = useAuth()
+    const currentReactions = ref()
+    const reactions = ref()
+    const totalPages = ref()
 
     onMounted(async () => {
         await loadUserProfile()
         await loadReactions()
     })
 
-    const reactions = ref()
     const loadReactions = async () => {
         const data = await client.records.getList(
             'reactions',
-            1,
+            +props.page || 1,
             resultsPerPage,
             {
                 filter: `uploader="${userProfile.value.userId}"`,
             }
         )
         reactions.value = data.items
+        currentReactions.value = reactions.value
         filteredTags.value = data.items
+        totalPages.value = data.totalPages
     }
 
     const userProfile = ref()
@@ -39,14 +44,11 @@
         const data = await client.records.getList('profiles', 1, 2, {
             filter: `name="${props.username}"`,
         })
-        console.log(data)
         userProfile.value = data.items[0]
-        console.log(userProfile.value)
     }
 
     const getAvatarUrl = computed(() => {
-        if (!userProfile?.value?.avatar)
-            return `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcI8nbp2LD-wFq5C5JIKAINuCvfl7_bUNwQw&usqp=CAU`
+        if (!userProfile?.value?.avatar) return ``
         return `${domain}/api/files/systemprofiles0/${userProfile?.value.id}/${userProfile?.value?.avatar}?thumb=100x100`
     })
 
@@ -70,12 +72,26 @@
     }
 
     const filteredTags = ref()
-    const filterTags = (tag) => {
-        filteredTags.value = reactions?.value?.filter((reaction) => {
-            const emotion = reaction.emotion.toLowerCase()
-            if (!tag) return reaction
-            if (emotion.includes(tag.toLowerCase())) return reaction
+
+    const filterTags = async (tag) => {
+        if (tag.length < 3) {
+            currentReactions.value = reactions.value
+            return
+        }
+        const capitalize = (word) => {
+            word = [...word]
+            for (const [index, letter] of word.entries()) {
+                if (index == 0) word[index] = letter.toUpperCase()
+                else word[index] = letter.toLowerCase()
+            }
+            return word.join('')
+        }
+        tag = capitalize(tag)
+        console.log(tag)
+        const data = await client.records.getFullList('reactions', 100, {
+            filter: `emotion~"${tag}"&&uploader="${userProfile.value.userId}"`,
         })
+        currentReactions.value = data
     }
 </script>
 
@@ -115,9 +131,12 @@
         </button>
         <Gallery__Search
             @filterTags="filterTags"
-            :reactions="reactions"
+            :reactions="currentReactions"
         ></Gallery__Search>
-        <Gallery :reactions="filteredTags"></Gallery>
+        <Gallery
+            :reactions="currentReactions"
+            :totalPages="totalPages"
+        ></Gallery>
     </section>
 </template>
 

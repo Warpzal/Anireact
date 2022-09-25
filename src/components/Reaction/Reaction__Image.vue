@@ -25,7 +25,7 @@
 </script>
 
 <template>
-    <div>
+    <div class="relative">
         <a
             :href="`${domain}/api/files/reactions/${props.reaction.id}/${props.reaction.reaction}`"
             class="reaction"
@@ -38,7 +38,7 @@
             <p class="reaction__emotion">{{ tag }}</p>
         </a>
         <button
-            class="button is-small is-danger"
+            class="button is-small is-danger reaction__delete"
             @click="deleteReaction"
             v-if="reaction?.uploader === user?.userId"
         >
@@ -48,6 +48,10 @@
 </template>
 
 <style lang="scss" scoped>
+    .relative {
+        position: relative;
+    }
+
     .reaction {
         display: block;
         cursor: pointer;
@@ -60,7 +64,6 @@
             max-width: 225px;
         }
         &__image {
-            opacity: 0.8;
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -77,6 +80,10 @@
             padding: 5px;
             background: black;
             color: white;
+        }
+        &__delete {
+            position: absolute;
+            top: 0;
         }
     }
 </style>
