@@ -1,21 +1,22 @@
 <script setup>
     import Reaction__Image from '../Reaction/Reaction__Image.vue'
     import { useRouter, useRoute } from 'vue-router'
-    import { onMounted } from 'vue'
 
     const props = defineProps({
-        reactions: Array,
-        totalPages: Number,
+        reactions: {
+            type: Array,
+            required: true,
+            default: [],
+        },
+        totalPages: {
+            type: Number,
+            required: false,
+            default: 1,
+        },
     })
 
     const router = useRouter()
     const route = useRoute()
-
-    onMounted(async () => {
-        // console.log(route.name)
-        // console.log(route.params.page)
-        // console.log(router)
-    })
 
     const isValidPage = (pageNumber) => {
         if (pageNumber > props.totalPages || pageNumber < 1) return false

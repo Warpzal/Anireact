@@ -1,36 +1,35 @@
 <script setup>
-    import { onMounted, ref, computed, watch } from 'vue'
-    import { useAuth } from '@/composables/useAuth.js'
+    import { onMounted, ref, computed } from 'vue'
+
     import { domain, client } from '@/pocketbase'
-    import { resultsPerPage } from '../config.js'
-    import { useRoute } from 'vue-router'
+    import { resultsPerPage } from '@/config.js'
+    import { useHelpers } from '@/composables/useHelpers.js'
+    import { useAuth } from '@/composables/useAuth.js'
+
     import Gallery from '../components/Gallery/Gallery.vue'
     import Gallery__Search from '../components/Gallery/Gallery__Search.vue'
     import Modal from '../components/Global/Modal.vue'
     import Reaction__Upload from '../components/Reaction/Reaction__Upload.vue'
 
     const props = defineProps({
-        username: String,
-        page: String,
+        username: {
+            type: String,
+            required: true,
+        },
+        page: {
+            type: String,
+            required: false,
+            default: 1,
+        },
     })
 
     const { user } = useAuth()
+    const { capitalize } = useHelpers()
+
     const currentReactions = ref()
     const reactions = ref()
     const totalPages = ref()
 
-    const route = useRoute()
-
-    watch(route.params, async (newRoute, oldRoute) => {
-        const pageNumber = +props.page || 1
-        const data = await client.records.getList(
-            'reactions',
-            pageNumber,
-            resultsPerPage
-        )
-        totalPages.value = data.totalPages
-        reactions.value = data.items
-    })
     onMounted(async () => {
         await loadUserProfile()
         await loadReactions()
@@ -39,15 +38,13 @@
     const loadReactions = async () => {
         const data = await client.records.getList(
             'reactions',
-            +props.page || 1,
+            +props.page,
             resultsPerPage,
             {
                 filter: `uploader="${userProfile.value.userId}"`,
             }
         )
-        reactions.value = data.items
-        currentReactions.value = reactions.value
-        filteredTags.value = data.items
+        reactions.value = currentReactions.value = data.items
         totalPages.value = data.totalPages
     }
 
@@ -61,7 +58,7 @@
 
     const getAvatarUrl = computed(() => {
         if (!userProfile?.value?.avatar) return ``
-        return `${domain}/api/files/systemprofiles0/${userProfile?.value.id}/${userProfile?.value?.avatar}?thumb=100x100`
+        return `${domain}/api/files/systemprofiles0/${userProfile?.value?.id}/${userProfile?.value?.avatar}?thumb=100x100`
     })
 
     const userAvatarFile = ref()
@@ -83,27 +80,20 @@
         isUploadingReaction.value = false
     }
 
-    const filteredTags = ref()
-
-    const filterTags = async (tag) => {
-        if (tag.length < 3) {
-            currentReactions.value = reactions.value
+    /**
+     * @param {String} tag
+     */
+    const filterReactions = async (tag) => {
+        if (tag.length > 3) {
+            tag = capitalize(tag)
+            console.log(tag)
+            const data = await client.records.getFullList('reactions', 100, {
+                filter: `emotion~"${tag}"&&uploader="${userProfile.value.userId}"`,
+            })
+            currentReactions.value = data
             return
         }
-        const capitalize = (word) => {
-            word = [...word]
-            for (const [index, letter] of word.entries()) {
-                if (index == 0) word[index] = letter.toUpperCase()
-                else word[index] = letter.toLowerCase()
-            }
-            return word.join('')
-        }
-        tag = capitalize(tag)
-        console.log(tag)
-        const data = await client.records.getFullList('reactions', 100, {
-            filter: `emotion~"${tag}"&&uploader="${userProfile.value.userId}"`,
-        })
-        currentReactions.value = data
+        currentReactions.value = reactions.value
     }
 </script>
 
@@ -112,6 +102,7 @@
         <Modal @resetState="resetState" v-if="isUploadingReaction">
             <Reaction__Upload></Reaction__Upload>
         </Modal>
+
         <div
             v-if="userProfile?.userId === user?.userId && userProfile != null"
             class="file"
@@ -132,8 +123,10 @@
                 </span>
             </label>
         </div>
+
         <img class="user-avatar" :src="getAvatarUrl" alt="avatar" />
         <p>{{ userProfile?.name }}</p>
+
         <button
             v-if="userProfile?.userId === user?.userId && userProfile != null"
             @click="isUploadingReaction = true"
@@ -141,14 +134,13 @@
         >
             Upload Reaction
         </button>
+
         <Gallery__Search
-            @filterTags="filterTags"
+            @filterReactions="filterReactions"
             :reactions="currentReactions"
-        ></Gallery__Search>
-        <Gallery
-            :reactions="currentReactions"
-            :totalPages="totalPages"
-        ></Gallery>
+        />
+
+        <Gallery :reactions="currentReactions" :totalPages="totalPages" />
     </section>
 </template>
 

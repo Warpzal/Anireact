@@ -11,12 +11,12 @@
     const { user } = useAuth()
 
     const getReactionThumbnail = computed(() => {
-        return `${domain}/api/files/reactions/${props.reaction.id}/${props.reaction.reaction}?thumb=200x200`
+        return `${domain}/api/files/reactions/${props?.reaction?.id}/${props?.reaction?.reaction}?thumb=200x200`
     })
 
     const deleteReaction = async () => {
         try {
-            await client.records.delete('reactions', props.reaction.id)
+            await client.records.delete('reactions', props?.reaction?.id)
             location.reload()
         } catch (e) {
             console.log(e)
@@ -27,7 +27,7 @@
 <template>
     <div class="relative">
         <a
-            :href="`${domain}/api/files/reactions/${props.reaction.id}/${props.reaction.reaction}`"
+            :href="`${domain}/api/files/reactions/${props?.reaction?.id}/${props?.reaction?.reaction}`"
             class="reaction"
         >
             <img

@@ -2,11 +2,11 @@
     import { ref, watchEffect } from 'vue'
     import { tags } from '@/config.js'
 
-    const emit = defineEmits(['filterTags'])
+    const emit = defineEmits(['filterReactions'])
     const searchTerm = ref('')
 
     watchEffect(() => {
-        emit('filterTags', searchTerm.value)
+        emit('filterReactions', searchTerm.value)
     })
 </script>
 
