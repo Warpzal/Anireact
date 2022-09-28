@@ -14,4 +14,7 @@
         box-sizing: border-box;
         margin: 0;
     }
+    body {
+        background: #f3f3f3;
+    }
 </style>

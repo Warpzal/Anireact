@@ -13,6 +13,6 @@ const tags = [
     'Embarassed',
 ].sort()
 
-const resultsPerPage = 5
+const resultsPerPage = 21
 
 export { tags, resultsPerPage }

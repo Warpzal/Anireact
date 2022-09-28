@@ -58,6 +58,7 @@
         position: relative;
         width: 100%;
         border-radius: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
         overflow: hidden;
         @media (min-width: 500px) {
             aspect-ratio: 1/1;

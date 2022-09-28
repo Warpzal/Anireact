@@ -17,7 +17,6 @@
             required: true,
         },
         page: {
-            type: String,
             required: false,
             default: 1,
         },
