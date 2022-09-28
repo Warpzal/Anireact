@@ -11,7 +11,7 @@
         page: {
             type: String,
             required: false,
-            default: 1,
+            default: '1',
         },
     })
 
@@ -22,14 +22,21 @@
     const totalPages = ref()
 
     onMounted(async () => {
-        const pageNumber = +props.page
-        const data = await client.records.getList(
-            'reactions',
-            pageNumber,
-            resultsPerPage
-        )
-        totalPages.value = data.totalPages
-        initialReactions.value = data.items
+        try {
+            const pageNumber = +props.page
+            const data = await client.records.getList(
+                'reactions',
+                pageNumber,
+                resultsPerPage,
+                {
+                    sort: `-created`,
+                }
+            )
+            totalPages.value = data.totalPages
+            initialReactions.value = data.items
+        } catch (e) {
+            console.log(e)
+        }
     })
 
     /**
@@ -40,6 +47,7 @@
             tag = capitalize(tag)
             const data = await client.records.getFullList('reactions', 100, {
                 filter: `emotion~"${tag}"`,
+                sort: `-created`,
             })
             currentReactions.value = data
             return
@@ -49,7 +57,7 @@
 </script>
 
 <template>
-    <div>
+    <div class="homepage">
         <Gallery__Search
             @filterReactions="filterReactions"
             :reactions="currentReactions"
@@ -59,7 +67,7 @@
 </template>
 
 <style lang="scss" scoped>
-    div {
+    .homepage {
         padding: 15px;
     }
 </style>

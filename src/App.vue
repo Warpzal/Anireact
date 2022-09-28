@@ -16,5 +16,9 @@
     }
     body {
         background: #f3f3f3;
+        min-height: 100vh;
+    }
+    .is-block {
+        display: block;
     }
 </style>

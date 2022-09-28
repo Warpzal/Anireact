@@ -33,7 +33,7 @@
             placeholder="password"
             v-model="password"
         />
-        <button class="button is-primary" type="submit">Register</button>
+        <button class="button is-primary" type="submit">Submit</button>
         <p v-if="error" class="form__error">Username or Email taken</p>
     </form>
 </template>

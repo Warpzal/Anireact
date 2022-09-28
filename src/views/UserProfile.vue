@@ -3,6 +3,7 @@
 
     import { domain, client } from '@/pocketbase'
     import { resultsPerPage } from '@/config.js'
+    import { useRouter } from 'vue-router'
     import { useHelpers } from '@/composables/useHelpers.js'
     import { useAuth } from '@/composables/useAuth.js'
 
@@ -21,7 +22,7 @@
             default: 1,
         },
     })
-
+    const router = useRouter()
     const { user } = useAuth()
     const { capitalize } = useHelpers()
 
@@ -35,24 +36,33 @@
     })
 
     const loadReactions = async () => {
-        const data = await client.records.getList(
-            'reactions',
-            +props.page,
-            resultsPerPage,
-            {
-                filter: `uploader="${userProfile.value.userId}"`,
-            }
-        )
-        reactions.value = currentReactions.value = data.items
-        totalPages.value = data.totalPages
+        try {
+            const data = await client.records.getList(
+                'reactions',
+                +props.page,
+                resultsPerPage,
+                {
+                    filter: `uploader="${userProfile.value.userId}"`,
+                    sort: `-created`,
+                }
+            )
+            reactions.value = currentReactions.value = data.items
+            totalPages.value = data.totalPages
+        } catch {
+            router.push('/')
+        }
     }
 
     const userProfile = ref()
     const loadUserProfile = async () => {
-        const data = await client.records.getList('profiles', 1, 2, {
-            filter: `name="${props.username}"`,
-        })
-        userProfile.value = data.items[0]
+        try {
+            const data = await client.records.getList('profiles', 1, 2, {
+                filter: `name="${props.username}"`,
+            })
+            userProfile.value = data.items[0]
+        } catch (e) {
+            console.log('WOOOPS')
+        }
     }
 
     const getAvatarUrl = computed(() => {
@@ -102,37 +112,49 @@
             <Reaction__Upload></Reaction__Upload>
         </Modal>
 
-        <div
-            v-if="userProfile?.userId === user?.userId && userProfile != null"
-            class="file"
-        >
-            <label class="file-label">
-                <input
-                    class="file-input"
-                    type="file"
-                    name="resume"
-                    ref="userAvatarFile"
-                    @change="uploadAvatar"
-                />
-                <span class="file-cta">
-                    <span class="file-icon">
-                        <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">Change Avatar</span>
-                </span>
-            </label>
+        <div class="is-flex is-justify-content-space-between mb-3">
+            <div class="left-side">
+                <img class="profile__avatar" :src="getAvatarUrl" alt="avatar" />
+                <p class="profile__name">{{ userProfile?.name }}</p>
+            </div>
+
+            <div class="right-side">
+                <button
+                    v-if="
+                        userProfile?.userId === user?.userId &&
+                        userProfile != null
+                    "
+                    @click="isUploadingReaction = true"
+                    class="button mb-3"
+                >
+                    Upload Reaction
+                </button>
+
+                <div
+                    v-if="
+                        userProfile?.userId === user?.userId &&
+                        userProfile != null
+                    "
+                    class="file"
+                >
+                    <label class="file-label">
+                        <input
+                            class="file-input"
+                            type="file"
+                            name="resume"
+                            ref="profileAvatarFile"
+                            @change="uploadAvatar"
+                        />
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">Change Avatar</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
         </div>
-
-        <img class="user-avatar" :src="getAvatarUrl" alt="avatar" />
-        <p>{{ userProfile?.name }}</p>
-
-        <button
-            v-if="userProfile?.userId === user?.userId && userProfile != null"
-            @click="isUploadingReaction = true"
-            class="button mb-3"
-        >
-            Upload Reaction
-        </button>
 
         <Gallery__Search
             @filterReactions="filterReactions"
@@ -146,5 +168,15 @@
 <style lang="scss" scoped>
     .profile {
         padding: 15px;
+        &__name {
+            font-size: 20px;
+        }
+        .left-side {
+            display: flex;
+            gap: 15px;
+            * {
+                align-self: end;
+            }
+        }
     }
 </style>

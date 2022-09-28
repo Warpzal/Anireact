@@ -15,7 +15,7 @@
     <teleport v-if="isOpen" to="#app">
         <div :class="{ 'is-active': isOpen }" class="modal">
             <div @click="closeModal" class="modal-background"></div>
-            <div class="modal-content">
+            <div class="modal-content" :style="{ width: props?.width }">
                 <slot></slot>
             </div>
             <button

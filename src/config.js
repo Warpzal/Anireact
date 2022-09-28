@@ -1,7 +1,14 @@
 const tags = [
+    'Calm',
     'Angry',
+    'Silly',
     'Happy',
+    'Excited',
+    'Worried',
+    'Frustrated',
+    'Nervous',
     'Sad',
+    'Pouty',
     'Disgusted',
     'Smug',
     'Disappointment',
@@ -11,8 +18,9 @@ const tags = [
     'Surprised',
     'Intense',
     'Embarassed',
+    'Tired',
 ].sort()
 
-const resultsPerPage = 21
+const resultsPerPage = 5
 
 export { tags, resultsPerPage }

@@ -1,7 +1,9 @@
 <script setup>
-    import { computed } from 'vue'
+    import { computed, ref } from 'vue'
     import { domain, client } from '@/pocketbase'
     import { useAuth } from '@/composables/useAuth.js'
+    import { tags } from '@/config.js'
+    import Modal from '../Global/Modal.vue'
 
     const props = defineProps({
         reaction: Object,
@@ -14,6 +16,25 @@
         return `${domain}/api/files/reactions/${props?.reaction?.id}/${props?.reaction?.reaction}?thumb=200x200`
     })
 
+    const emotion = ref(props?.reaction?.emotion)
+    const isEditMode = ref(false)
+    const resetState = () => (isEditMode.value = false)
+
+    const updateReaction = async () => {
+        try {
+            const record = await client.records.update(
+                'reactions',
+                props?.reaction?.id,
+                {
+                    emotion: emotion.value,
+                }
+            )
+            location.reload()
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     const deleteReaction = async () => {
         try {
             await client.records.delete('reactions', props?.reaction?.id)
@@ -25,6 +46,26 @@
 </script>
 
 <template>
+    <Modal :width="'350px'" @resetState="resetState" v-if="isEditMode">
+        <div class="edit">
+            <img class="" :src="getReactionThumbnail" alt="reaction image" />
+            <p>Select Emotion</p>
+
+            <div class="select mb-3">
+                <select v-model="emotion">
+                    <option v-for="tag in tags">{{ tag }}</option>
+                </select>
+            </div>
+
+            <button @click="updateReaction" class="button is-info mb-3">
+                Update
+            </button>
+            <button @click="deleteReaction" class="button is-danger mb-3">
+                Delete
+            </button>
+        </div>
+    </Modal>
+
     <div class="relative">
         <a
             :href="`${domain}/api/files/reactions/${props?.reaction?.id}/${props?.reaction?.reaction}`"
@@ -37,13 +78,11 @@
             />
             <p class="reaction__emotion">{{ tag }}</p>
         </a>
-        <button
-            class="button is-small is-danger reaction__delete"
-            @click="deleteReaction"
-            v-if="reaction?.uploader === user?.userId"
-        >
-            Delete
-        </button>
+        <i
+            v-if="user?.userId === reaction?.uploader"
+            @click="isEditMode = true"
+            class="fas fa-ellipsis-vertical reaction__edit"
+        ></i>
     </div>
 </template>
 
@@ -80,11 +119,32 @@
             bottom: 0;
             padding: 5px;
             background: black;
-            color: white;
+            color: #f3f3f3;
         }
-        &__delete {
+        &__edit {
+            cursor: pointer;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            font-size: 1.8rem;
             position: absolute;
             top: 0;
+            right: 10px;
+            transition: 0.3s all;
+            &:hover {
+                transform: scale(0.8);
+            }
+        }
+    }
+
+    .edit {
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        img {
+            width: 60%;
+            margin-bottom: 15px;
         }
     }
 </style>

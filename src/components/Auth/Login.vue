@@ -23,7 +23,7 @@
             placeholder="password"
             v-model="password"
         />
-        <button class="button is-primary" type="submit">Login</button>
+        <button class="button is-primary" type="submit">Submit</button>
         <p v-if="error" class="form__error">Incorrect password or email</p>
     </form>
 </template>

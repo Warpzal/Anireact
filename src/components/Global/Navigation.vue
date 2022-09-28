@@ -21,62 +21,71 @@
 </script>
 
 <template>
-    <header class="header">
+    <header class="navigation">
         <Modal @resetState="resetState" v-if="isLoggingIn || isSigningUp">
             <login v-if="isLoggingIn"></login>
             <register v-if="isSigningUp"></register>
         </Modal>
         <div class="nav">
             <div class="left-side">
-                <p>reactions.moe</p>
+                <router-link to="/" class="header__link">
+                    <p>Reactions.moe</p>
+                    <img class="nav__mascot" src="@/assets/akari.png" alt="" />
+                </router-link>
             </div>
             <div class="right-side">
                 <div v-if="user">
-                    <router-link to="/" class="header__link">
-                        <button class="button">Home</button>
-                    </router-link>
                     <router-link :to="`/user/${user?.name}`">
-                        <button v-if="user" @click="refresh" class="button">
-                            My Profile
-                        </button>
+                        <p>{{ user?.name }}</p>
                     </router-link>
-                    <button v-if="user" @click="logout" class="button">
-                        Logout
-                    </button>
+                    <a href="#" v-if="user" @click="logout">Logout</a>
                 </div>
-                <nav v-else>
-                    <ul>
-                        <li>
-                            <button @click="handleLogin" class="button">
-                                Login
-                            </button>
-                            <button @click="handleRegister" class="button">
-                                Register
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
+                <div v-else>
+                    <p @click="handleLogin">Login</p>
+                    <p @click="handleRegister">Register</p>
+                </div>
             </div>
         </div>
     </header>
 </template>
 
 <style lang="scss" scoped>
-    .header {
+    .navigation {
         max-width: 100%;
         padding: 5px 20px;
-        background: grey;
+        background: lightgrey;
+        &__link {
+            color: var(--primary-color);
+        }
         box-shadow: var(--shadow-3);
-    }
-    .header__link {
-        color: var(--primary-color);
     }
     .nav {
         width: 100%;
         display: flex;
         justify-content: space-between;
-        ul {
-            display: flex;
+        &__mascot {
+            width: 50px;
+        }
+    }
+    .left-side > a {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        text-transform: lowercase;
+    }
+    .right-side > div {
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+    .right-side > div p,
+    a {
+        cursor: pointer;
+        color: black;
+        padding: 0 15px;
+        &:hover {
+            color: #333;
+            text-decoration: underline;
         }
     }
 </style>
