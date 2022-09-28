@@ -22,7 +22,11 @@
 
 <template>
     <header class="navigation">
-        <Modal @resetState="resetState" v-if="isLoggingIn || isSigningUp">
+        <Modal
+            width="400px"
+            @resetState="resetState"
+            v-if="isLoggingIn || isSigningUp"
+        >
             <login v-if="isLoggingIn"></login>
             <register v-if="isSigningUp"></register>
         </Modal>
