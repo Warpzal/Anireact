@@ -51,6 +51,7 @@ export function useAuth() {
             })
             login({ email, password })
         } catch (e) {
+            console.log(e)
             error.value = e
         }
     }
