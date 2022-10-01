@@ -132,7 +132,7 @@
                             class="file-input"
                             type="file"
                             name="resume"
-                            ref="profileAvatarFile"
+                            ref="userAvatarFile"
                             @change="uploadAvatar"
                         />
                         <span class="file-cta">
