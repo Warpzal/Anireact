@@ -44,7 +44,7 @@
      * @param {String} tag
      */
     const filterReactions = async (tag) => {
-        if (tag.length > 3) {
+        if (tag.length > 2) {
             tag = capitalize(tag)
             const data = await client.records.getFullList('reactions', 100, {
                 filter: `emotion~"${tag}"`,

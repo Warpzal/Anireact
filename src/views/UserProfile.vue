@@ -94,7 +94,7 @@
      * @param {String} tag
      */
     const filterReactions = async (tag) => {
-        if (tag.length > 3) {
+        if (tag.length > 2) {
             tag = capitalize(tag)
             console.log(tag)
             const data = await client.records.getFullList('reactions', 100, {
@@ -132,7 +132,7 @@
                             class="file-input"
                             type="file"
                             name="resume"
-                            ref="userAvatarFile"
+                            ref="profileAvatarFile"
                             @change="uploadAvatar"
                         />
                         <span class="file-cta">
