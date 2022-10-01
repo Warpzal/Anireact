@@ -126,6 +126,13 @@
             padding: 5px;
             background: black;
             color: #f3f3f3;
+            &:hover {
+                background: white;
+                color: rgba(0, 0, 0, 0.8);
+                border: 1px solid rgba(0, 0, 0, 0.8);
+                border-left: 0px;
+                border-right: 0px;
+            }
         }
         &__edit {
             cursor: pointer;
