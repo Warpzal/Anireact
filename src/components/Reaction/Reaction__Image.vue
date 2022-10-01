@@ -5,6 +5,7 @@
     import { tags } from '@/config.js'
     import Modal from '../Global/Modal.vue'
 
+    const emits = defineEmits(['filterReactions'])
     const props = defineProps({
         reaction: Object,
         tag: String,
@@ -43,6 +44,10 @@
             console.log(e)
         }
     }
+
+    const filterReactions = () => {
+        emits('filterReactions', props?.reaction?.emotion)
+    }
 </script>
 
 <template>
@@ -76,8 +81,8 @@
                 :src="getReactionThumbnail"
                 alt="reaction image"
             />
-            <p class="reaction__emotion">{{ tag }}</p>
         </a>
+        <p @click="filterReactions" class="reaction__emotion">{{ tag }}</p>
         <i
             v-if="user?.userId === reaction?.uploader"
             @click="isEditMode = true"
@@ -93,7 +98,6 @@
 
     .reaction {
         display: block;
-        cursor: pointer;
         position: relative;
         width: 100%;
         border-radius: 3px;
@@ -115,8 +119,10 @@
             }
         }
         &__emotion {
+            cursor: pointer;
             position: absolute;
-            bottom: 0;
+            left: 1px;
+            bottom: 1px;
             padding: 5px;
             background: black;
             color: #f3f3f3;
@@ -124,12 +130,13 @@
         &__edit {
             cursor: pointer;
             padding: 5px;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
             border-radius: 5px;
             font-size: 1.8rem;
             position: absolute;
-            top: 0;
-            right: 10px;
+            top: 5px;
+            right: 5px;
             transition: 0.3s all;
             &:hover {
                 transform: scale(0.8);

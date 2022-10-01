@@ -11,7 +11,7 @@
 </script>
 
 <template>
-    <form class="search">
+    <form @submit.prevent="" class="search">
         <input
             v-model="searchTerm"
             autocomplete="off"

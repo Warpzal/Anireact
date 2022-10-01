@@ -2,6 +2,7 @@
     import Reaction__Image from '../Reaction/Reaction__Image.vue'
     import { useRouter, useRoute } from 'vue-router'
 
+    const emits = defineEmits(['filterReactions'])
     const props = defineProps({
         reactions: {
             type: Array,
@@ -44,12 +45,17 @@
             params: { page: currentPage + 1 },
         })
     }
+
+    const filterReactions = (emotion) => {
+        emits('filterReactions', emotion)
+    }
 </script>
 
 <template>
     <section class="gallery grid">
         <Reaction__Image
             v-for="reaction in reactions"
+            @filterReactions="filterReactions"
             :key="reaction.id"
             :reaction="reaction"
             :tag="reaction.emotion"

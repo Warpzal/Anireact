@@ -22,6 +22,7 @@
     const totalPages = ref()
 
     onMounted(async () => {
+        document.title = 'Anime Reactions - Home'
         try {
             const pageNumber = +props.page
             const data = await client.records.getList(
@@ -62,7 +63,11 @@
             @filterReactions="filterReactions"
             :reactions="currentReactions"
         />
-        <Gallery :reactions="currentReactions" :totalPages="totalPages" />
+        <Gallery
+            @filterReactions="filterReactions"
+            :reactions="currentReactions"
+            :totalPages="totalPages"
+        />
     </div>
 </template>
 

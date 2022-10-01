@@ -57,7 +57,6 @@
     .navigation {
         max-width: 100%;
         padding: 5px 20px;
-        background: lightgrey;
         &__link {
             color: var(--primary-color);
         }

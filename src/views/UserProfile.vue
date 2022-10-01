@@ -31,6 +31,7 @@
     const totalPages = ref()
 
     onMounted(async () => {
+        document.title = 'Anime Reactions - ' + props.username
         await loadUserProfile()
         await loadReactions()
     })
@@ -119,17 +120,6 @@
             </div>
 
             <div class="right-side">
-                <button
-                    v-if="
-                        userProfile?.userId === user?.userId &&
-                        userProfile != null
-                    "
-                    @click="isUploadingReaction = true"
-                    class="button mb-3"
-                >
-                    Upload Reaction
-                </button>
-
                 <div
                     v-if="
                         userProfile?.userId === user?.userId &&
@@ -142,7 +132,7 @@
                             class="file-input"
                             type="file"
                             name="resume"
-                            ref="profileAvatarFile"
+                            ref="userAvatarFile"
                             @change="uploadAvatar"
                         />
                         <span class="file-cta">
@@ -161,7 +151,19 @@
             :reactions="currentReactions"
         />
 
-        <Gallery :reactions="currentReactions" :totalPages="totalPages" />
+        <button
+            v-if="userProfile?.userId === user?.userId && userProfile != null"
+            @click="isUploadingReaction = true"
+            class="button mb-3"
+        >
+            Upload Reaction
+        </button>
+
+        <Gallery
+            @filterReactions="filterReactions"
+            :reactions="currentReactions"
+            :totalPages="totalPages"
+        />
     </section>
 </template>
 

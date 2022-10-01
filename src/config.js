@@ -21,6 +21,6 @@ const tags = [
     'Tired',
 ].sort()
 
-const resultsPerPage = 5
+const resultsPerPage = 20
 
 export { tags, resultsPerPage }
