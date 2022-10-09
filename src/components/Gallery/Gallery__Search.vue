@@ -2,11 +2,16 @@
     import { ref, watchEffect } from 'vue'
     import { tags } from '@/config.js'
 
+    const props = defineProps(['searchTerm'])
     const emit = defineEmits(['filterReactions'])
-    const searchTerm = ref('')
+    const searchTerm = ref(props.searchTerm || '')
 
     watchEffect(() => {
         emit('filterReactions', searchTerm.value)
+    })
+
+    watchEffect(() => {
+        searchTerm.value = props.searchTerm
     })
 </script>
 

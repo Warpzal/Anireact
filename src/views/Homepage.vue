@@ -18,6 +18,7 @@
     const { capitalize } = useHelpers()
 
     const currentReactions = ref()
+    const currentTag = ref('')
     const initialReactions = ref()
     const totalPages = ref()
 
@@ -46,6 +47,7 @@
     const filterReactions = async (tag) => {
         if (tag.length > 2) {
             tag = capitalize(tag)
+            currentTag.value = tag
             const data = await client.records.getFullList('reactions', 100, {
                 filter: `emotion~"${tag}"`,
                 sort: `-created`,
@@ -54,6 +56,7 @@
             return
         }
         currentReactions.value = initialReactions.value
+        currentTag.value = ''
     }
 </script>
 
@@ -62,6 +65,7 @@
         <Gallery__Search
             @filterReactions="filterReactions"
             :reactions="currentReactions"
+            :searchTerm="currentTag"
         />
         <Gallery
             @filterReactions="filterReactions"

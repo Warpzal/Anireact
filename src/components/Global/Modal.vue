@@ -32,5 +32,6 @@
         background: white;
         padding: 15px;
         border-radius: 3px;
+        max-width: 95%;
     }
 </style>
