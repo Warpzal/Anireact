@@ -1,5 +1,5 @@
 const tags = [
-  'Love',
+    'Love',
     'Calm',
     'Angry',
     'Confused',
@@ -23,6 +23,6 @@ const tags = [
     'Tired',
 ].sort()
 
-const resultsPerPage = 15
+const resultsPerPage = 21
 
 export { tags, resultsPerPage }

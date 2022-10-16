@@ -52,6 +52,8 @@
                 filter: `emotion~"${tag}"`,
                 sort: `-created`,
             })
+            console.log(data)
+
             currentReactions.value = data
             return
         }

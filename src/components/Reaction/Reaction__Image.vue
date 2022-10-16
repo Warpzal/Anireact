@@ -80,6 +80,7 @@
                 class="reaction__image"
                 :src="getReactionThumbnail"
                 alt="reaction image"
+                loading="lazy"
             />
         </a>
         <p @click="filterReactions" class="reaction__emotion">{{ tag }}</p>
