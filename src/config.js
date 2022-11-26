@@ -1,6 +1,7 @@
 const tags = [
     'Love',
     'Calm',
+    'Curious',
     'Angry',
     'Confused',
     'Silly',
