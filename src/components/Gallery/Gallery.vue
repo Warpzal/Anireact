@@ -1,54 +1,54 @@
 <script setup>
-    import Reaction__Image from '../Reaction/Reaction__Image.vue'
-    import { useRouter, useRoute } from 'vue-router'
+import Reaction__Image from '../Reaction/Reaction__Image.vue'
+import { useRouter, useRoute } from 'vue-router'
 
-    const emits = defineEmits(['filterReactions'])
-    const props = defineProps({
-        reactions: {
-            type: Array,
-            required: true,
-            default: [],
-        },
-        totalPages: {
-            type: Number,
-            required: false,
-            default: 1,
-        },
+const emits = defineEmits(['filterReactions'])
+const props = defineProps({
+    reactions: {
+        type: Array,
+        required: true,
+        default: [],
+    },
+    totalPages: {
+        type: Number,
+        required: false,
+        default: 1,
+    },
+})
+
+const router = useRouter()
+const route = useRoute()
+
+const isValidPage = (pageNumber) => {
+    if (pageNumber > props.totalPages || pageNumber < 1) return false
+    return true
+}
+
+const fetchPreviousPage = () => {
+    const currentPage = +route.params?.page || 1
+    if (!isValidPage(currentPage - 1)) return
+    const name = route.name.includes('Pagination')
+        ? route.name
+        : route.name + 'Pagination'
+    router.push({ name, params: { page: currentPage - 1 } })
+}
+
+const fetchNextPage = () => {
+    const currentPage = +route.params?.page || 1
+    if (!isValidPage(currentPage + 1)) return
+    const name = route.name.includes('Pagination')
+        ? route.name
+        : route.name + 'Pagination'
+
+    router.push({
+        name,
+        params: { page: currentPage + 1 },
     })
+}
 
-    const router = useRouter()
-    const route = useRoute()
-
-    const isValidPage = (pageNumber) => {
-        if (pageNumber > props.totalPages || pageNumber < 1) return false
-        return true
-    }
-
-    const fetchPreviousPage = () => {
-        const currentPage = +route.params?.page || 1
-        if (!isValidPage(currentPage - 1)) return
-        const name = route.name.includes('Pagination')
-            ? route.name
-            : route.name + 'Pagination'
-        router.push({ name, params: { page: currentPage - 1 } })
-    }
-
-    const fetchNextPage = () => {
-        const currentPage = +route.params?.page || 1
-        if (!isValidPage(currentPage + 1)) return
-        const name = route.name.includes('Pagination')
-            ? route.name
-            : route.name + 'Pagination'
-
-        router.push({
-            name,
-            params: { page: currentPage + 1 },
-        })
-    }
-
-    const filterReactions = (emotion) => {
-        emits('filterReactions', emotion)
-    }
+const filterReactions = (emotion) => {
+    emits('filterReactions', emotion)
+}
 </script>
 
 <template>
@@ -81,14 +81,14 @@
 </template>
 
 <style lang="scss" scoped>
-    .page-navigation {
-        margin-top: 20px;
+.page-navigation {
+    margin-top: 20px;
+}
+.grid {
+    @media (min-width: 500px) {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
     }
-    .grid {
-        @media (min-width: 500px) {
-            display: grid;
-            gap: 20px;
-            grid-template-columns: repeat(auto-fit, 225px);
-        }
-    }
+}
 </style>

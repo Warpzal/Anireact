@@ -1,53 +1,53 @@
 <script setup>
-    import { computed, ref } from 'vue'
-    import { domain, client } from '@/pocketbase'
-    import { useAuth } from '@/composables/useAuth.js'
-    import { tags } from '@/config.js'
-    import Modal from '../Global/Modal.vue'
+import { computed, ref } from 'vue'
+import { domain, client } from '@/pocketbase'
+import { useAuth } from '@/composables/useAuth.js'
+import { tags } from '@/config.js'
+import Modal from '../Global/Modal.vue'
 
-    const emits = defineEmits(['filterReactions'])
-    const props = defineProps({
-        reaction: Object,
-        tag: String,
-    })
+const emits = defineEmits(['filterReactions'])
+const props = defineProps({
+    reaction: Object,
+    tag: String,
+})
 
-    const { user } = useAuth()
+const { user } = useAuth()
 
-    const getReactionThumbnail = computed(() => {
-        return `${domain}/api/files/reactions/${props?.reaction?.id}/${props?.reaction?.reaction}?thumb=200x200`
-    })
+const getReactionThumbnail = computed(() => {
+    return `${domain}/api/files/reactions/${props?.reaction?.id}/${props?.reaction?.reaction}?thumb=200x200`
+})
 
-    const emotion = ref(props?.reaction?.emotion)
-    const isEditMode = ref(false)
-    const resetState = () => (isEditMode.value = false)
+const emotion = ref(props?.reaction?.emotion)
+const isEditMode = ref(false)
+const resetState = () => (isEditMode.value = false)
 
-    const updateReaction = async () => {
-        try {
-            const record = await client.records.update(
-                'reactions',
-                props?.reaction?.id,
-                {
-                    emotion: emotion.value,
-                }
-            )
-            location.reload()
-        } catch (e) {
-            console.log(e)
-        }
+const updateReaction = async () => {
+    try {
+        const record = await client.records.update(
+            'reactions',
+            props?.reaction?.id,
+            {
+                emotion: emotion.value,
+            }
+        )
+        location.reload()
+    } catch (e) {
+        console.log(e)
     }
+}
 
-    const deleteReaction = async () => {
-        try {
-            await client.records.delete('reactions', props?.reaction?.id)
-            location.reload()
-        } catch (e) {
-            console.log(e)
-        }
+const deleteReaction = async () => {
+    try {
+        await client.records.delete('reactions', props?.reaction?.id)
+        location.reload()
+    } catch (e) {
+        console.log(e)
     }
+}
 
-    const filterReactions = () => {
-        emits('filterReactions', props?.reaction?.emotion)
-    }
+const filterReactions = () => {
+    emits('filterReactions', props?.reaction?.emotion)
+}
 </script>
 
 <template>
@@ -93,73 +93,69 @@
 </template>
 
 <style lang="scss" scoped>
-    .relative {
-        position: relative;
-    }
+.relative {
+    position: relative;
+}
 
-    .reaction {
-        display: block;
-        position: relative;
+.reaction {
+    display: block;
+    position: relative;
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    &__image {
         width: 100%;
-        border-radius: 3px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        @media (min-width: 500px) {
-            aspect-ratio: 1/1;
-            max-width: 225px;
-        }
-        &__image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
-            border-radius: inherit;
-            transition: 0.4s;
-            &:hover {
-                transform: scale(1.1);
-            }
-        }
-        &__emotion {
-            cursor: pointer;
-            position: absolute;
-            left: 1px;
-            bottom: 1px;
-            padding: 5px;
-            background: black;
-            color: #f3f3f3;
-            &:hover {
-                background: white;
-                color: rgba(0, 0, 0, 0.8);
-                border: 1px solid rgba(0, 0, 0, 0.8);
-                border-left: 0px;
-                border-right: 0px;
-            }
-        }
-        &__edit {
-            cursor: pointer;
-            padding: 5px;
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            border-radius: 5px;
-            font-size: 1.8rem;
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            transition: 0.3s all;
-            &:hover {
-                transform: scale(0.8);
-            }
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+        border-radius: inherit;
+        transition: 0.4s;
+        &:hover {
+            transform: scale(1.1);
         }
     }
+    &__emotion {
+        cursor: pointer;
+        position: absolute;
+        left: 1px;
+        bottom: 1px;
+        padding: 5px;
+        background: black;
+        color: #f3f3f3;
+        &:hover {
+            background: white;
+            color: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            border-left: 0px;
+            border-right: 0px;
+        }
+    }
+    &__edit {
+        cursor: pointer;
+        padding: 5px;
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        border-radius: 5px;
+        font-size: 1.8rem;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        transition: 0.3s all;
+        &:hover {
+            transform: scale(0.8);
+        }
+    }
+}
 
-    .edit {
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        img {
-            width: 60%;
-            margin-bottom: 15px;
-        }
+.edit {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    img {
+        width: 60%;
+        margin-bottom: 15px;
     }
+}
 </style>
