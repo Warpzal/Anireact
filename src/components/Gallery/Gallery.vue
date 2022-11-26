@@ -1,6 +1,7 @@
 <script setup>
 import Reaction__Image from '../Reaction/Reaction__Image.vue'
 import { useRouter, useRoute } from 'vue-router'
+import { ref, onUpdated } from 'vue'
 
 const emits = defineEmits(['filterReactions'])
 const props = defineProps({
@@ -49,6 +50,19 @@ const fetchNextPage = () => {
 const filterReactions = (emotion) => {
     emits('filterReactions', emotion)
 }
+
+const grid = ref('repeat(auto-fit, minmax(225px, 1fr))')
+const setGrid = () => {
+    if (props.reactions.length < 4) {
+        grid.value = '1fr 1fr 1fr 1fr'
+        return
+    }
+    grid.value = `repeat(auto-fit, minmax(225px, 1fr))`
+}
+
+onUpdated(() => {
+    setGrid()
+})
 </script>
 
 <template>
@@ -88,7 +102,7 @@ const filterReactions = (emotion) => {
     @media (min-width: 500px) {
         display: grid;
         gap: 20px;
-        grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+        grid-template-columns: v-bind(grid);
     }
 }
 </style>
